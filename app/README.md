@@ -1,122 +1,80 @@
-# React + TypeScript + Vite
+# Triskelix Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+This package contains the Triskelix web frontend built with React, TypeScript, Vite, Tailwind CSS, Radix UI primitives, and Zustand.
 
-Currently, two official plugins are available:
+## Requirements
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- Node.js 20 or newer
+- npm
+- Triskelix backend API
 
-## React Compiler
+## Environment
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+Copy the example environment file:
 
-## Expanding the ESLint configuration
+```bash
+cp .env.example .env
+```
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+Set the backend API base URL:
 
-```js
-export default defineConfig([
-  # Triskelix Frontend
+```bash
+VITE_API_URL=http://localhost:8000
+```
 
-  Triskelix is a React + TypeScript + Vite frontend for application security scanning, compliance reporting, and AI-assisted remediation workflows.
+If `VITE_API_URL` is omitted, the app uses `http://localhost:8000`.
 
-  It provides a public landing page plus authenticated views for running scans, reviewing findings, downloading reports, and managing account settings.
+## Development
 
-  ## Features
+Install dependencies:
 
-  - Public marketing landing page with product overview and calls to action.
-  - Authentication flow for login and registration.
-  - Scan submission for pasted code, GitHub repositories, and live URLs.
-  - Scan status tracking and detailed scan reports.
-  - Dashboard with scan history, security scores, and vulnerability counts.
-  - Settings page for profile updates.
-  - Cookie-based authentication with automatic refresh handled by the API client.
+```bash
+npm install
+```
 
-  ## Tech Stack
+Start Vite:
 
-  - React 19
-  - TypeScript
-  - Vite
-  - React Router
-  - Tailwind CSS
-  - Radix UI primitives
-  - Zustand for client state
-  - Recharts, Lucide, Sonner, and other UI utilities
+```bash
+npm run dev
+```
 
-  ## Prerequisites
+Build for production:
 
-  - Node.js 20 or newer
-  - A running Triskelix backend API
+```bash
+npm run build
+```
 
-  If no API URL is configured, the frontend defaults to `http://localhost:8000`.
+Preview the production build:
 
-  ## Setup
+```bash
+npm run preview
+```
 
-  Install dependencies:
+Run ESLint:
 
-  ```bash
-  npm install
-  ```
+```bash
+npm run lint
+```
 
-  Optionally set the API base URL in an `.env` file:
+## Application Areas
 
-  ```bash
-  VITE_API_URL=http://localhost:8000
-  ```
+- `src/pages` - route-level screens
+- `src/components` - shared UI and feature components
+- `src/components/ui` - reusable Radix-style UI primitives
+- `src/api` - backend API client
+- `src/store` - shared client state
+- `src/types` - application types and constants
+- `src/effects` - visual effects and background treatments
 
-  Start the development server:
+## Auth And API Behavior
 
-  ```bash
-  npm run dev
-  ```
+The API client in `src/api/client.ts` sends requests with `credentials: 'include'` so HttpOnly cookies can be used for authentication. When an authenticated request fails, the client attempts token refresh through `/api/auth/refresh` and retries the original request.
 
-  Build for production:
+The frontend currently expects backend routes for:
 
-  ```bash
-  npm run build
-  ```
-
-  Lint the codebase:
-
-  ```bash
-  npm run lint
-  ```
-
-  Preview the production build locally:
-
-  ```bash
-  npm run preview
-  ```
-
-  ## Routing
-
-  - `/` - landing page
-  - `/login` - sign in
-  - `/register` - create an account
-  - `/scan` - create a new scan
-  - `/scan/:id` - scan status page
-  - `/dashboard` - scan history and summary metrics
-  - `/report/:id` - detailed report view
-  - `/settings` - profile and account settings
-
-  ## API Notes
-
-  The frontend talks to the backend through `src/api/client.ts`.
-
-  - Requests use `credentials: 'include'` so HttpOnly auth cookies are sent automatically.
-  - Access token refresh is handled transparently by the client.
-  - The frontend expects the backend to support the scan, auth, GitHub, and report endpoints used by the UI.
-
-  ## Project Structure
-
-  - `src/pages` - route-level screens
-  - `src/components` - shared UI and feature components
-  - `src/api` - backend API client
-  - `src/store` - shared client state
-  - `src/types` - application types and constants
-  - `src/effects` - visual effects and background treatments
-
-  ## Notes
-
-  The app is styled with a custom Triskelix visual system and Tailwind utility classes. If you change the backend host or auth behavior, update `VITE_API_URL` and the API client accordingly.
+- Authentication and profile management
+- Scan creation, listing, status, and detail retrieval
+- Vulnerability status updates
+- Remediation generation and GitHub PR creation
+- GitHub authorization and repository listing
+- Markdown report and GitHub Actions workflow download
