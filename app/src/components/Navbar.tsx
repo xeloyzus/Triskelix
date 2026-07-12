@@ -2,7 +2,6 @@ import { Link, useLocation, useNavigate } from 'react-router'
 import { useState, useEffect } from 'react'
 import { Shield, Menu, X, Terminal, LogOut } from 'lucide-react'
 import { useStore } from '@/store'
-import { api } from '@/api/client'
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false)

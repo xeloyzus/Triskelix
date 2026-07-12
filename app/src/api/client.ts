@@ -7,36 +7,12 @@ const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000'
 // The backend sets `triskelix_access` and `triskelix_refresh` as httpOnly
 // cookies, which the browser sends automatically with `credentials: 'include'`.
 //
-// Preemptive refresh: we decode the access token to check its expiry and
-// refresh before it expires, avoiding 401 responses entirely.
+// Authenticated requests retry once after a silent refresh when the backend
+// reports that the current access cookie is expired.
 // ---------------------------------------------------------------------------
 
 interface FetchOptions extends RequestInit {
   _retried?: boolean
-}
-
-let refreshPromise: Promise<boolean> | null = null
-
-async function ensureFreshToken(): Promise<void> {
-  // We can't read httpOnly cookies from JS, but we can try a lightweight call
-  // to /api/auth/me which will 401 if the token is expired. We use a
-  // debounced refresh: if we've refreshed recently (within 10 min), skip.
-  const lastRefresh = (window as any).__triskelix_last_refresh as number || 0
-  const now = Date.now()
-  if (now - lastRefresh < 10 * 60 * 1000) return
-
-  // Deduplicate concurrent refresh calls
-  if (!refreshPromise) {
-    refreshPromise = fetch(`${API_URL}/api/auth/refresh`, {
-      method: 'POST',
-      credentials: 'include',
-    }).then(r => {
-      (window as any).__triskelix_last_refresh = Date.now()
-      return r.ok
-    }).catch(() => false)
-      .finally(() => { refreshPromise = null })
-  }
-  await refreshPromise
 }
 
 async function fetchWithAuth(path: string, options: FetchOptions = {}) {
