@@ -24,6 +24,8 @@ VITE_API_URL=http://localhost:8000
 
 If `VITE_API_URL` is omitted, the app uses `http://localhost:8000`.
 
+For GitHub Pages deployments, add a repository variable named `VITE_API_URL` with the public URL of the deployed backend API. GitHub Pages cannot call a backend running on `localhost`.
+
 ## Development
 
 Install dependencies:
@@ -55,6 +57,17 @@ Run ESLint:
 ```bash
 npm run lint
 ```
+
+## GitHub Pages
+
+The app uses hash-based routing for GitHub Pages compatibility. Deployed routes use URLs such as:
+
+```text
+https://xeloyzus.github.io/Triskelix/#/login
+https://xeloyzus.github.io/Triskelix/#/dashboard
+```
+
+The Pages workflow builds the Vite app from `app/` and deploys `app/dist`. Configure `VITE_API_URL` under repository settings before relying on authenticated or API-backed features.
 
 ## Application Areas
 
